@@ -1,5 +1,5 @@
 Gem::Specification.new do |spec|
-  spec.name		= ""
+  spec.name		= "xing-dev-assets"
   spec.version		= "0.0.1"
   author_list = {
     "Judson Lester" => 'nyarly@gmail.com'
