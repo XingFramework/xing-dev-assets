@@ -17,6 +17,16 @@ Gem::Specification.new do |spec|
   # Do this: y$@"
   # !!find lib bin doc spec spec_help -not -regex '.*\.sw.' -type f 2>/dev/null
   spec.files		= %w[
+    lib/xing/dev-assets.rb
+    lib/xing/dev-assets/cookie_setter.rb
+    lib/xing/dev-assets/rack_app.rb
+    lib/xing/dev-assets/logger.rb
+    lib/xing/dev-assets/dumper.rb
+    lib/xing/dev-assets/empty_file.rb
+    lib/xing/dev-assets/goto_param.rb
+    lib/xing/dev-assets/strip_incoming_cache_headers.rb
+    spec_help/spec_helper.rb
+    spec_help/gem_test_suite.rb
   ]
 
   spec.test_file        = "spec_help/gem_test_suite.rb"
@@ -30,7 +40,7 @@ Gem::Specification.new do |spec|
   spec.rdoc_options	+= %w{--main doc/README }
   spec.rdoc_options	+= ["--title", "#{spec.name}-#{spec.version} Documentation"]
 
-  #spec.add_dependency("", "> 0")
+  spec.add_dependency("rack", "~> 1.6")
 
   #spec.post_install_message = "Thanks for installing my gem!"
 end

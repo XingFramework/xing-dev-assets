@@ -1,0 +1,8 @@
+require 'xing/dev-assets'
+require 'xing/dev-assets/cookie_setter'
+require 'xing/dev-assets/rack_app'
+require 'xing/dev-assets/logger'
+require 'xing/dev-assets/dumper'
+require 'xing/dev-assets/empty_file'
+require 'xing/dev-assets/goto_param'
+require 'xing/dev-assets/strip_incoming_cache_headers'

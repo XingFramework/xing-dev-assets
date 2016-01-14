@@ -9,12 +9,12 @@ module Xing
         status, headers, body = @app.call(env)
         default = [ status, headers, body ]
         request_path = env["SCRIPT_NAME"] + env["PATH_INFO"]
-        if env["QUERY_STRING"]
+        unless env["QUERY_STRING"].nil? or env["QUERY_STRING"].empty?
           request_path += "&#{env["QUERY_STRING"]}"
         end
 
         return default unless status == 404
-        return default if /\A(assets|fonts|system)/ =~ request_path
+        return default if %r(\A/(assets|fonts|system)) =~ request_path
         return default if /\.(xml|html|ico|txt)\z/ =~ request_path
         return default if /goto=/ =~ env["QUERY_STRING"]
 

@@ -7,4 +7,3 @@
 -I spec_help
 --require simplecov
 --require spec_helper
---pattern *.rb
