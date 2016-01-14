@@ -43,9 +43,15 @@ describe Xing::DevAssets::GotoParam do
       expect(request.get("/somewhere?auth_token=123412341234").location).to match(%r[goto=])
       expect(request.get("/somewhere?auth_token=123412341234").location).to match(%r[auth_token=])
     end
-
-
   end
 
+  context "underlying app returns 200" do
+    let :app do
+      proc{ [200, {}, ["Oh, that."]] }
+    end
 
+    it "should redirect most request to new path" do
+      expect(request.get("/somewhere").body).to eq("Oh, that.")
+    end
+  end
 end
