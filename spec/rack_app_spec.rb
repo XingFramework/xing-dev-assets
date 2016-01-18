@@ -29,11 +29,12 @@ describe Xing::DevAssets::RackApp do
   end
 
   it "should set up app correctly" do
+    expect(mock_builder).to receive(:use).with(Rack::CommonLogger, mock_logger)
+    expect(mock_builder).to receive(:use).with(Xing::DevAssets::Dumper, mock_logger)
     expect(mock_builder).to receive(:use).with(Xing::DevAssets::GotoParam)
     expect(mock_builder).to receive(:use).with(Xing::DevAssets::CookieSetter, "lrdBackendUrl", /3000/)
     expect(mock_builder).to receive(:use).with(Xing::DevAssets::CookieSetter, "xingBackendUrl", /3000/)
     expect(mock_builder).to receive(:use).with(Xing::DevAssets::StripIncomingCacheHeaders)
-    expect(mock_builder).to receive(:use).with(Rack::CommonLogger, mock_logger)
     expect(mock_builder).not_to receive(:map).with(/livereload/)
     expect(mock_builder).to receive(:use).with(Rack::Static, hash_including(:root => root_path))
     expect(mock_builder).to receive(:run)

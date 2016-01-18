@@ -1,6 +1,7 @@
 require 'xing/dev-assets/cookie_setter'
 require 'xing/dev-assets/goto_param'
 require 'xing/dev-assets/logger'
+require 'xing/dev-assets/dumper'
 require 'xing/dev-assets/empty_file'
 require 'xing/dev-assets/strip_incoming_cache_headers'
 
@@ -23,8 +24,9 @@ module Xing
       # (because this will log into a dir in the gem, but copied into subclass
       # will be relative to that file and therefore into the project)
       def log_root
-        File.expand_path("../../log", __FILE__)
+        @log_root ||= File.expand_path("../../log", __FILE__)
       end
+      attr_writer :log_root
 
       def logpath_for_env
         File.join( log_root, "#{env}_static.log")
@@ -42,8 +44,38 @@ module Xing
         @env ||= ENV['RAILS_ENV'] || 'development'
       end
 
+      def log_level
+        @log_level ||= Logger::WARN
+      end
+
+      LEVEL_LOOKUP = {
+        :debug => Logger::DEBUG,
+        :info => Logger::INFO,
+        :warn => Logger::WARN,
+        :error => Logger::ERROR,
+        :fatal => Logger::FATAL,
+        :unknown => Logger::UNKNOWN
+      }.freeze
+      def log_level=(value)
+        @log_level =
+          case value
+          when Symbol
+            LEVEL_LOOKUP.fetch(value)
+          when *LEVEL_LOOKUP.values
+            value
+          else
+            warning "Unrecognized logger level: not in #{LEVEL_LOOKUP.keys.inspect} or #{LEVEL_LOOKUP.values.inspect}"
+            value
+          end
+        unless @logger.nil?
+          @logger.level = value
+        end
+      end
+
       def logger
-        @logger ||= Logger.new(logpath_for_env)
+        @logger ||= Logger.new(logpath_for_env).tap do |logger|
+          logger.level = log_level
+        end
       end
 
       def report_startup
@@ -70,6 +102,10 @@ module Xing
         builder.use Rack::CommonLogger, logger
       end
 
+      def debug_dump
+        builder.use Dumper, logger
+      end
+
       def shortcut_livereload
         if env != "development"
           builder.map "/assets/livereload.js" do
@@ -94,10 +130,11 @@ module Xing
       end
 
       def setup_middleware
+        logging
+        debug_dump
         goto_redirect
         cookies
         disable_caching
-        logging
         shortcut_livereload
         static_assets
       end
