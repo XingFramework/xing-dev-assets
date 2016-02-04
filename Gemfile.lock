@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    xing-dev-assets (0.0.1)
+    xing-dev-assets (1.0.0.pre.beta)
       rack (~> 1.6)
 
 GEM
